@@ -5,11 +5,8 @@ open System.Collections.Immutable
 type Range(Min: int, Max: int) =
     let length = Max - Min + 1
     member _.LowerHalf = Range(Min, Max - length / 2)
-
     member _.UpperHalf = Range(Min + length / 2, Max)
-
-    member _.Exact =
-        if Min - Max = 0 then Some(Max) else None
+    member _.Exact = if length = 1 then Some(Max) else None
 
 type Direction =
     | Front
