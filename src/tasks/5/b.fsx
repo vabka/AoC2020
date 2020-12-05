@@ -51,21 +51,14 @@ let getSeatIdFromTicket str =
 
 let puzzleInput = File.ReadAllLines "./input.txt"
 
-let allSeats =
-    let seatId (r,c) = seatId r c
-    let allRows = [0..127]
-    let allColumns = [0..7]
-    let allSeatsInRow row = allColumns |> List.map (fun column -> row, column)
-    allRows
-    |> List.fold (fun l r -> l@(allSeatsInRow r)) []
-    |> List.toArray
+let myList = puzzleInput |> Seq.map getSeatIdFromTicket |> Seq.toList
 
-let myList = puzzleInput |> Seq.map getSeatIdFromTicket |> Seq.toArray |> ImmutableHashSet.Create<int>
+let min = myList |> List.min
+let max = myList |> List.max
 
-// Я замучался. Загоняем всё в эксель...
-let allRows = [0..127]
-let allColumns = [0..7]
-let printRow (r:int) =
-    allColumns |> List.map (seatId r) |> List.iter (fun id -> printf "%i\t" (if myList.Contains(id) then 1 else 0))
-    printfn ""
-allRows |> List.iter printRow
+let fullSum = [min..max] |> List.sum
+let actualSum = myList |> List.sum
+
+let result = fullSum - actualSum
+
+printfn "%i" result
