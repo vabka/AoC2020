@@ -2,16 +2,13 @@ open System.IO
 open System
 
 let getSeatIdFromTicket (ticket: string) =
-    let replace (n: char) (o: char) (str: string) = str.Replace(o, n)
-    let toZero = replace '1'
-    let toOne = replace '0'
-
+    let replace (o: char) (n: char) (str: string) = str.Replace(o, n)
     let bits =
         ticket
-        |> toOne 'R'
-        |> toZero 'L'
-        |> toOne 'B'
-        |> toZero 'F'
+        |> replace 'R' '1'
+        |> replace 'L' '0'
+        |> replace 'B' '1'
+        |> replace 'F' '0'
 
     Convert.ToInt32(bits, 2)
 
