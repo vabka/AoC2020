@@ -1,6 +1,10 @@
-open System
 open System.IO
-open System.Collections.Generic
 open System.Collections.Immutable
 
-let puzzleInput = File.ReadAllLines ("input.txt")
+File.ReadAllText("input.txt").Split("\n\n")
+|> Seq.map (fun f -> f.Replace("\n", ""))
+|> Seq.map (fun f -> f.ToCharArray())
+|> Seq.map ImmutableHashSet.Create<char>
+|> Seq.map (fun f -> f.Count)
+|> Seq.sum
+|> printfn "%i"
