@@ -25,4 +25,4 @@ let splitByEndl = split Environment.NewLine
  
 let isSome (x: 'a option) = x.IsSome
 
-let getVal (x: 'a option) = x.Value
+let unwrap (x: 'a option) = x.Value
