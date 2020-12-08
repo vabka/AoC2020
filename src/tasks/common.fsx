@@ -26,3 +26,9 @@ let splitByEndl = split Environment.NewLine
 let isSome (x: 'a option) = x.IsSome
 
 let unwrap (x: 'a option) = x.Value
+
+let parseInt = Int32.Parse
+
+let firstSome (x: seq<'a option>)=  x |> Seq.filter isSome |> Seq.map unwrap |> Seq.head
+
+let withNth n replace src = src |> List.mapi (fun i e -> if i = n then replace else e)

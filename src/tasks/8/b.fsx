@@ -5,8 +5,6 @@ open System
 open System.Collections.Generic
 open System.IO
 
-
-
 type Instruction =
     | Nop of int
     | Acc of int
@@ -42,21 +40,18 @@ let execute (cmds: Instruction list) =
                     idx + 1
     if idx >= cmds.Length then Some(acc) else None
 
-let tryFix (cmds: Instruction list) = 
+let tryFix (cmds: Instruction list) =
     seq {
-        for i in [0..cmds.Length] do
-            let cmd = cmds.[i]
-            let swapped = match cmd with 
-                          | Nop(x) -> Jmp(x)
-                          | Jmp(x) -> Nop(x) 
-                          | Acc(x) -> Acc(x)
-            let code = match swapped with 
-                       | Acc(_) -> None
-                       | x -> cmds |> List.mapi (fun idx v -> if i = idx then x else v) |> Some
-            if code.IsSome then
-                printfn "l: %i" i
-                yield code.Value
-            
+        for i in [ 0 .. cmds.Length ] do
+            let modifiedCode =
+                match cmds.[i] with
+                | Acc (_) -> None
+                | Nop (0) -> None
+                | Jmp (1) -> None
+                | Nop (x) -> cmds |> withNth i (Jmp(x)) |> Some
+                | Jmp (x) -> cmds |> withNth i (Nop(x)) |> Some
+
+            if modifiedCode.IsSome then modifiedCode.Value
     }
 
 File.ReadAllText "input.txt"
@@ -65,7 +60,5 @@ File.ReadAllText "input.txt"
 |> Array.toList
 |> tryFix
 |> Seq.map execute
-|> Seq.filter isSome
-|> Seq.map getVal
-|> Seq.head
+|> firstSome
 |> printfn "%i"
