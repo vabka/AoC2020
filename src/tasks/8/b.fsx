@@ -23,12 +23,10 @@ let execute (cmds: Instruction list) =
     let set = HashSet()
     let mutable idx = 0
     let mutable acc = 0
-    let mutable Break = false
-    while (not Break) && idx < cmds.Length do
-        let exists = idx |> set.Add |> not
-        printfn "d: %i" set.Count
-        if exists then
-            Break <- true
+    let mutable halt = false
+    while (not halt) && idx < cmds.Length do
+        if idx |> set.Add |> not then
+            halt <- true
         else
             let cmd = cmds.[idx]
             idx <-
@@ -38,11 +36,14 @@ let execute (cmds: Instruction list) =
                 | Acc (value) ->
                     acc <- acc + value
                     idx + 1
-    if idx >= cmds.Length then Some(acc) else None
+    printfn "state:\tacc=%i;\tidx=%i;\thalt=%b" acc idx halt
+    if not halt then Some(acc) else None
 
 let tryFix (cmds: Instruction list) =
     seq {
         for i in [ 0 .. cmds.Length ] do
+            printf "%i:\t" (i + 1)
+
             let modifiedCode =
                 match cmds.[i] with
                 | Acc (_) -> None
@@ -51,7 +52,11 @@ let tryFix (cmds: Instruction list) =
                 | Nop (x) -> cmds |> withNth i (Jmp(x)) |> Some
                 | Jmp (x) -> cmds |> withNth i (Nop(x)) |> Some
 
-            if modifiedCode.IsSome then modifiedCode.Value
+            if modifiedCode.IsSome then
+                printfn "check"
+                modifiedCode.Value
+            else
+                printfn "skip"
     }
 
 File.ReadAllText "input.txt"
@@ -61,4 +66,4 @@ File.ReadAllText "input.txt"
 |> tryFix
 |> Seq.map execute
 |> firstSome
-|> printfn "%i"
+|> printfn "result: %i"
