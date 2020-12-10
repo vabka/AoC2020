@@ -22,7 +22,9 @@ let splitByLine =
   split (Environment.NewLine + Environment.NewLine)
 
 let splitByEndl = split Environment.NewLine
- 
+let readFile = System.IO.File.ReadAllText
+let readAllLines = readFile >> splitByEndl
+
 let isSome (x: 'a option) = x.IsSome
 
 let unwrap (x: 'a option) = x.Value

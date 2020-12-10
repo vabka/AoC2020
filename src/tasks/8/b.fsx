@@ -61,8 +61,8 @@ let tryFix (cmds: Instruction list) =
 
 File.ReadAllText "input.txt"
 |> splitByEndl
-|> Array.map parseCmd
-|> Array.toList
+|> Seq.map parseCmd
+|> Seq.toList
 |> tryFix
 |> Seq.map execute
 |> firstSome

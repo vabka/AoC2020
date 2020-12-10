@@ -3,6 +3,7 @@ open Common
 open System
 open System.IO
 
+//Копипаста из первого дня
 let rec duplet input: ('a * 'a) list =
     let first = input |> List.tryHead
     let least = input |> List.tail
