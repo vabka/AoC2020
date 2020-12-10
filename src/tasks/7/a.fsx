@@ -6,21 +6,16 @@ open System.Text.RegularExpressions
 let u f a b = f b a
 let split (s: string) (d: char) = s.Split(d)
 let input = File.ReadAllLines "input.txt"
-
+let rgMatch rg str = Regex.Match (rg, str)
 let data =
     //{color} bags contain {number} {color} bags?(, {number} {color} bags?)*.
     let parseLine line =
-        let rg =
-            @"(?<color>.*) bags? contain (?<content>.*)\."
 
         let split = u split
-        let rg = Regex(rg)
-        let m = rg.Match(line)
+        let m = rgMatch @"(?<color>.*) bags? contain (?<content>.*)\." line
 
         let parseContent s =
-            let rg = @"(?<count>\d+) (?<color>.*) bags?"
-            let rg = Regex(rg)
-            let m = rg.Match(s)
+            let m = rgMatch @"(?<count>\d+) (?<color>.*) bags?" s
             m.Groups.["color"].Value, m.Groups.["count"].Value |> Int32.Parse
 
         let color = m.Groups.["color"].Value
